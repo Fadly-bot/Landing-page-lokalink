@@ -1,0 +1,8 @@
+# Kredensial - JANGAN commit file berisi password/secret
+config/config.php
+*.env
+
+# Sistem
+.DS_Store
+Thumbs.db
+*.log
