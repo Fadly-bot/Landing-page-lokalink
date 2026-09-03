@@ -386,7 +386,7 @@ require __DIR__ . '/includes/header.php';
                     </div>
                 <?php endif; ?>
 
-                <form action="actions/submit-lead.php" method="post" class="mt-5 space-y-4">
+                <form action="/api/submit-lead.php" method="post" class="mt-5 space-y-4">
                     <?= csrf_field() ?>
 
                     <div class="grid gap-4 sm:grid-cols-2">

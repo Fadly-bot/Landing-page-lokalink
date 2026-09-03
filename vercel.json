@@ -1,0 +1,26 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "functions": {
+        "api/index.php": {
+            "runtime": "vercel-php@0.9.0"
+        },
+        "actions/submit-lead.php": {
+            "runtime": "vercel-php@0.9.0"
+        }
+    },
+    "routes": [
+        {
+            "src": "^/api/submit-lead\\.php$",
+            "dest": "/actions/submit-lead.php"
+        },
+        { "src": "/assets/(.*)", "dest": "/assets/$1" },
+        {
+            "src": "/(.*\\.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|avif|ico|woff2?|ttf|eot|txt|xml|json|webmanifest))",
+            "dest": "/$1"
+        },
+        {
+            "src": "^/(?!api/submit-lead\\.php$)(.*)$",
+            "dest": "/api/index.php"
+        }
+    ]
+}
