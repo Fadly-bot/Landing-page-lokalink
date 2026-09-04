@@ -17,9 +17,9 @@ define('DB_PASS', '');
 
 // ---- Informasi bisnis ----
 // Nomor WhatsApp bisnis, format internasional tanpa tanda '+'
-// contoh: 6281234567890
-define('WHATSAPP_NUMBER', '6281234567890');
-define('CONTACT_EMAIL', 'halo@lokalink.id');
+// contoh: 6285129984813
+define('WHATSAPP_NUMBER', '6285129984813');
+define('CONTACT_EMAIL', 'hello.lokalink@gmail.com');
 define('BUSINESS_ADDRESS', 'Yogyakarta, Indonesia');
 
 // ---- Situs ----

@@ -4,7 +4,7 @@
 <footer class="bg-slate-900 text-slate-300 mt-20">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 grid gap-10 md:grid-cols-3">
         <div>
-            <img src="src/img/logo/logo.svg" alt="Logo Lokalink" class="h-9 w-auto mb-4 bg-white rounded-lg p-1">
+            <img src="src/img/logo/logo.png" alt="Logo Lokalink" class="h-9 w-auto mb-4 bg-white rounded-lg p-1">
             <p class="text-sm leading-relaxed">
                 Lokalink membantu bisnis lokal membangun kehadiran digital agar lebih mudah
                 ditemukan, dipahami, dipercaya, dan dihubungi oleh pelanggan.

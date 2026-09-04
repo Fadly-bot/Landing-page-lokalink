@@ -61,15 +61,44 @@ require __DIR__ . '/includes/header.php';
                 <span class="w-3 h-3 rounded-full bg-green-400"></span>
             </div>
             <div class="space-y-3" aria-hidden="true">
-                <div class="h-8 w-3/4 bg-brand-200 rounded-lg"></div>
-                <div class="h-3 w-full bg-slate-200 rounded"></div>
-                <div class="h-3 w-5/6 bg-slate-200 rounded"></div>
-                <div class="grid grid-cols-3 gap-3 pt-2">
-                    <div class="h-16 bg-brand-100 rounded-lg"></div>
-                    <div class="h-16 bg-brand-100 rounded-lg"></div>
-                    <div class="h-16 bg-brand-100 rounded-lg"></div>
+                <!-- Mini header: logo + menu -->
+                <div class="flex items-center justify-between bg-brand-50 border border-brand-100 rounded-lg px-3 py-2">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-4 h-4 rounded bg-brand-600"></span>
+                        <span class="h-2 w-12 bg-brand-300 rounded"></span>
+                    </span>
+                    <span class="hidden sm:flex items-center gap-2">
+                        <span class="h-1.5 w-8 bg-slate-300 rounded"></span>
+                        <span class="h-1.5 w-8 bg-slate-300 rounded"></span>
+                        <span class="h-4 w-14 bg-brand-600 rounded-full"></span>
+                    </span>
                 </div>
-                <div class="h-9 w-40 bg-brand-600 rounded-lg"></div>
+                <!-- Judul + deskripsi -->
+                <div class="pt-1 text-center">
+                    <div class="h-4 w-3/4 mx-auto bg-slate-800 rounded"></div>
+                    <div class="mt-2 space-y-1.5">
+                        <div class="h-2 w-full bg-slate-200 rounded"></div>
+                        <div class="h-2 w-5/6 mx-auto bg-slate-200 rounded"></div>
+                    </div>
+                </div>
+                <!-- Kartu konten -->
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                    <div class="rounded-lg border border-slate-200 p-2 space-y-1.5">
+                        <div class="h-8 bg-brand-100 rounded"></div>
+                        <div class="h-1.5 w-4/5 bg-slate-200 rounded"></div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 p-2 space-y-1.5">
+                        <div class="h-8 bg-brand-100 rounded"></div>
+                        <div class="h-1.5 w-3/5 bg-slate-200 rounded"></div>
+                    </div>
+                    <div class="rounded-lg border border-slate-200 p-2 space-y-1.5">
+                        <div class="h-8 bg-brand-100 rounded"></div>
+                        <div class="h-1.5 w-2/3 bg-slate-200 rounded"></div>
+                    </div>
+                </div>
+                <div class="text-center pt-1">
+                    <span class="inline-block h-8 w-36 bg-brand-600 rounded-lg"></span>
+                </div>
             </div>
             <p class="mt-4 text-xs text-slate-400 text-center">Contoh tampilan website bisnis sederhana</p>
         </div>
@@ -258,10 +287,34 @@ require __DIR__ . '/includes/header.php';
                 <div class="p-5">
                     <p class="font-bold text-slate-900">Barbershop Rapi Pangkas</p>
                     <p class="mt-1 text-xs text-slate-500">Jam buka, harga layanan, lokasi, tombol WhatsApp</p>
-                    <div class="mt-3 space-y-2" aria-hidden="true">
-                        <div class="h-2 w-full bg-slate-100 rounded"></div>
-                        <div class="h-2 w-4/5 bg-slate-100 rounded"></div>
-                        <div class="h-7 w-28 bg-brand-600 rounded-lg"></div>
+                    <!-- Mini preview: barbershop -->
+                    <div class="mt-3 rounded-lg border border-slate-200 overflow-hidden" aria-hidden="true">
+                        <div class="flex items-center justify-between bg-slate-900 px-3 py-2">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-3.5 h-3.5 rounded-full bg-amber-400"></span>
+                                <span class="h-1.5 w-14 bg-slate-400 rounded"></span>
+                            </span>
+                            <span class="hidden sm:block h-4 w-14 bg-amber-400 rounded-full"></span>
+                        </div>
+                        <div class="p-3 space-y-2">
+                            <div class="h-2.5 w-3/4 bg-slate-800 rounded"></div>
+                            <div class="h-1.5 w-full bg-slate-200 rounded"></div>
+                            <div class="grid grid-cols-3 gap-2 pt-1">
+                                <div class="rounded border border-slate-200 p-1.5 space-y-1">
+                                    <div class="h-1.5 w-full bg-amber-300 rounded"></div>
+                                    <div class="h-1.5 w-2/3 bg-slate-200 rounded"></div>
+                                </div>
+                                <div class="rounded border border-slate-200 p-1.5 space-y-1">
+                                    <div class="h-1.5 w-full bg-amber-300 rounded"></div>
+                                    <div class="h-1.5 w-1/2 bg-slate-200 rounded"></div>
+                                </div>
+                                <div class="rounded border border-slate-200 p-1.5 space-y-1">
+                                    <div class="h-1.5 w-full bg-amber-300 rounded"></div>
+                                    <div class="h-1.5 w-3/4 bg-slate-200 rounded"></div>
+                                </div>
+                            </div>
+                            <span class="inline-block h-5 w-24 bg-amber-400 rounded-full"></span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -276,10 +329,39 @@ require __DIR__ . '/includes/header.php';
                 <div class="p-5">
                     <p class="font-bold text-slate-900">Kedai Kopi Sudut</p>
                     <p class="mt-1 text-xs text-slate-500">QR Menu, menu dan harga terbaru, profil Google</p>
-                    <div class="mt-3 space-y-2" aria-hidden="true">
-                        <div class="h-2 w-full bg-slate-100 rounded"></div>
-                        <div class="h-2 w-3/5 bg-slate-100 rounded"></div>
-                        <div class="h-7 w-28 bg-brand-600 rounded-lg"></div>
+                    <!-- Mini preview: kedai kopi -->
+                    <div class="mt-3 rounded-lg border border-slate-200 overflow-hidden" aria-hidden="true">
+                        <div class="flex items-center justify-between bg-amber-900 px-3 py-2">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-3.5 h-3.5 rounded-full bg-amber-100"></span>
+                                <span class="h-1.5 w-14 bg-amber-200/70 rounded"></span>
+                            </span>
+                            <span class="hidden sm:flex gap-1.5">
+                                <span class="h-1.5 w-6 bg-amber-200/60 rounded"></span>
+                                <span class="h-1.5 w-6 bg-amber-200/60 rounded"></span>
+                            </span>
+                        </div>
+                        <div class="p-3 space-y-2">
+                            <div class="h-2.5 w-2/3 bg-slate-800 rounded"></div>
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between rounded bg-amber-50 border border-amber-100 px-2 py-1.5">
+                                    <span class="h-1.5 w-16 bg-amber-800/60 rounded"></span>
+                                    <span class="h-1.5 w-6 bg-amber-800/40 rounded"></span>
+                                </div>
+                                <div class="flex items-center justify-between rounded bg-amber-50 border border-amber-100 px-2 py-1.5">
+                                    <span class="h-1.5 w-12 bg-amber-800/60 rounded"></span>
+                                    <span class="h-1.5 w-6 bg-amber-800/40 rounded"></span>
+                                </div>
+                                <div class="flex items-center justify-between rounded bg-amber-50 border border-amber-100 px-2 py-1.5">
+                                    <span class="h-1.5 w-14 bg-amber-800/60 rounded"></span>
+                                    <span class="h-1.5 w-6 bg-amber-800/40 rounded"></span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-0.5">
+                                <span class="inline-block h-5 w-24 bg-amber-700 rounded-full"></span>
+                                <span class="w-7 h-7 rounded-lg bg-emerald-500"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -294,10 +376,33 @@ require __DIR__ . '/includes/header.php';
                 <div class="p-5">
                     <p class="font-bold text-slate-900">Jasa &amp; Bengkel Terpercaya</p>
                     <p class="mt-1 text-xs text-slate-500">Daftar jasa, galeri pekerjaan, kontak WhatsApp</p>
-                    <div class="mt-3 space-y-2" aria-hidden="true">
-                        <div class="h-2 w-full bg-slate-100 rounded"></div>
-                        <div class="h-2 w-4/6 bg-slate-100 rounded"></div>
-                        <div class="h-7 w-28 bg-brand-600 rounded-lg"></div>
+                    <!-- Mini preview: jasa/bengkel -->
+                    <div class="mt-3 rounded-lg border border-slate-200 overflow-hidden" aria-hidden="true">
+                        <div class="flex items-center justify-between bg-blue-950 px-3 py-2">
+                            <span class="flex items-center gap-1.5">
+                                <span class="w-3.5 h-3.5 rounded bg-blue-400"></span>
+                                <span class="h-1.5 w-14 bg-blue-200/70 rounded"></span>
+                            </span>
+                            <span class="hidden sm:block h-4 w-14 bg-blue-500 rounded-full"></span>
+                        </div>
+                        <div class="p-3 space-y-2">
+                            <div class="h-2.5 w-3/5 bg-slate-800 rounded"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="rounded bg-blue-50 border border-blue-100 p-1.5 space-y-1">
+                                    <div class="h-5 bg-blue-200 rounded"></div>
+                                    <div class="h-1.5 w-4/5 bg-slate-200 rounded"></div>
+                                </div>
+                                <div class="rounded bg-blue-50 border border-blue-100 p-1.5 space-y-1">
+                                    <div class="h-5 bg-blue-200 rounded"></div>
+                                    <div class="h-1.5 w-3/5 bg-slate-200 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="h-1.5 w-full bg-slate-200 rounded"></div>
+                                <div class="h-1.5 w-2/3 bg-slate-200 rounded"></div>
+                            </div>
+                            <span class="inline-block h-5 w-24 bg-emerald-500 rounded-full"></span>
+                        </div>
                     </div>
                 </div>
             </div>
