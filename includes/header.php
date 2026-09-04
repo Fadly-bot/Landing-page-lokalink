@@ -27,6 +27,96 @@ $ogImage   = base_url() . '/src/img/logo/logo.png';
     <meta property="og:locale" content="id_ID">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#0d9488">
+    <meta name="google-site-verification" content="rz4jnPTh8oPi4eXDaIkvYkMCTGojhIaGm3oS7H2oZuM" />
+
+    <?php
+    // JSON-LD structured data (Organization, WebSite, FAQPage).
+    // Konten FAQ mengambil dari pertanyaan yang sama di index.php (jangan diubah terpisah).
+    $siteUrl     = base_url() . '/';
+    $orgLogo     = base_url() . '/src/img/logo/logo.png';
+    $jsonLdFlags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+
+    $jsonLdOrganization = [
+        '@context'    => 'https://schema.org',
+        '@type'       => 'Organization',
+        'name'        => 'Lokalink',
+        'url'         => $siteUrl,
+        'logo'        => $orgLogo,
+        'areaServed'  => 'Cimahi, Indonesia',
+        'contactPoint' => [
+            '@type'       => 'ContactPoint',
+            'contactType' => 'customer service',
+            'telephone'   => '+' . e(WHATSAPP_NUMBER),
+            'email'       => e(CONTACT_EMAIL),
+            'url'         => 'https://wa.me/' . e(WHATSAPP_NUMBER),
+        ],
+    ];
+
+    $jsonLdWebSite = [
+        '@context' => 'https://schema.org',
+        '@type'    => 'WebSite',
+        'name'     => 'Lokalink',
+        'url'      => $siteUrl,
+    ];
+
+    $jsonLdFaqPage = [
+        '@context'   => 'https://schema.org',
+        '@type'      => 'FAQPage',
+        'mainEntity' => [
+            [
+                '@type'          => 'Question',
+                'name'           => 'Berapa biayanya?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Biaya tergantung layanan yang dipilih. Setelah konsultasi, Anda akan menerima rincian harga yang jelas sebelum pengerjaan dimulai. Tidak ada biaya tersembunyi.',
+                ],
+            ],
+            [
+                '@type'          => 'Question',
+                'name'           => 'Berapa lama prosesnya?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Untuk kebutuhan standar, biasanya beberapa hari kerja. Waktu pastinya tergantung kelengkapan informasi bisnis Anda dan akan kami sampaikan di awal.',
+                ],
+            ],
+            [
+                '@type'          => 'Question',
+                'name'           => 'Saya tidak paham teknis, apa bisa?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Sangat bisa. Justru itu fokus Lokalink: Anda cukup cerita tentang bisnis Anda, urusan teknis kami yang selesaikan. Panduan singkat juga disertakan.',
+                ],
+            ],
+            [
+                '@type'          => 'Question',
+                'name'           => 'Apakah QR Review Card menjamin rating Google naik?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Tidak. QR Review Card hanya mempermudah pelanggan membuka halaman review Google bisnis Anda. Isi dan jumlah review sepenuhnya ditentukan oleh pelanggan Anda sendiri.',
+                ],
+            ],
+            [
+                '@type'          => 'Question',
+                'name'           => 'Setelah jadi, bagaimana kalau ingin mengubah isi website?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Anda bisa hubungi kami lewat WhatsApp. Perubahan kecil (jam buka, harga, nomor kontak) dibantu dengan cepat. Panduan pengelolaan dasar juga kami sediakan.',
+                ],
+            ],
+            [
+                '@type'          => 'Question',
+                'name'           => 'Apakah bisa revisi?',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => 'Bisa. Sebelum serah terima, Anda akan melihat hasilnya dan kami siap merapikan bagian yang kurang sesuai.',
+                ],
+            ],
+        ],
+    ];
+    ?>
+    <script type="application/ld+json"><?= json_encode($jsonLdOrganization, $jsonLdFlags) ?></script>
+    <script type="application/ld+json"><?= json_encode($jsonLdWebSite, $jsonLdFlags) ?></script>
+    <script type="application/ld+json"><?= json_encode($jsonLdFaqPage, $jsonLdFlags) ?></script>
 
     <link rel="icon" type="image/png" href="src/img/logo/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
