@@ -3,8 +3,8 @@
 // Dipanggil dari index.php setelah config & helpers dimuat.
 require_once __DIR__ . '/../src/helpers.php';
 
-$canonical = base_url() . '/index.php';
-$ogImage   = base_url() . '/src/img/logo/logo.svg';
+$canonical = base_url() . '/';
+$ogImage   = base_url() . '/src/img/logo/logo.png';
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -21,7 +21,12 @@ $ogImage   = base_url() . '/src/img/logo/logo.svg';
     <meta property="og:description" content="Website bisnis, QR menu, dan QR review card untuk UMKM. Sederhana, cepat, dan terjangkau.">
     <meta property="og:url" content="<?= e($canonical) ?>">
     <meta property="og:image" content="<?= e($ogImage) ?>">
+    <meta property="og:image:width" content="856">
+    <meta property="og:image:height" content="291">
+    <meta property="og:image:alt" content="Logo Lokalink">
     <meta property="og:locale" content="id_ID">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#0d9488">
 
     <link rel="icon" type="image/png" href="src/img/logo/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>

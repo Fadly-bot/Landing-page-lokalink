@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://landing-page-lokalink.vercel.app/sitemap.xml
