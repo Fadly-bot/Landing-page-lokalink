@@ -23,7 +23,7 @@ $ogImage   = base_url() . '/src/img/logo/logo.svg';
     <meta property="og:image" content="<?= e($ogImage) ?>">
     <meta property="og:locale" content="id_ID">
 
-    <link rel="icon" type="image/svg+xml" href="src/img/logo/favicon.svg">
+    <link rel="icon" type="image/png" href="src/img/logo/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
