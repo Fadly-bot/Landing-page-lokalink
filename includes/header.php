@@ -118,7 +118,7 @@ $ogImage   = base_url() . '/src/img/logo/logo.png';
     <script type="application/ld+json"><?= json_encode($jsonLdWebSite, $jsonLdFlags) ?></script>
     <script type="application/ld+json"><?= json_encode($jsonLdFaqPage, $jsonLdFlags) ?></script>
 
-    <link rel="icon" type="image/png" href="src/img/logo/favicon.png">
+    <link rel="icon" type="image/png" href="/src/img/logo/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {

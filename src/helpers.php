@@ -67,7 +67,13 @@ function base_url(): string
     if (defined('BASE_URL') && BASE_URL !== '') {
         return rtrim(BASE_URL, '/');
     }
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    // Deteksi HTTPS: perhatikan juga header proxy (mis. Vercel/Cloudflare)
+    // yang meneruskan protokol asli via X-Forwarded-Proto.
+    $forwardedProto = strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '');
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || $forwardedProto === 'https'
+        || (isset($_SERVER['SERVER_PORT']) && (int) $_SERVER['SERVER_PORT'] === 443);
+    $scheme = $isHttps ? 'https' : 'http';
     $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
     $base   = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/')), '/');
     return $scheme . '://' . $host . $base;
