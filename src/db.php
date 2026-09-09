@@ -19,6 +19,8 @@ if (file_exists(__DIR__ . '/../config/config.php')) {
 function db_connect(): ?PDO
 {
     if (!defined('DB_ENABLED') || !DB_ENABLED) {
+        // Bedakan di log: "belum dikonfigurasi/dinonaktifkan" vs "koneksi gagal".
+        error_log('[Lokalink] db_connect(): koneksi database dinonaktifkan (DB_ENABLED=false). Jika ini production, pastikan Environment Variables DB_* sudah diset.');
         return null;
     }
 
