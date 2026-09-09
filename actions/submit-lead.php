@@ -24,12 +24,12 @@ if (file_exists(__DIR__ . '/../config/config.php')) {
 require_once __DIR__ . '/../src/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('index.php#kontak');
+    redirect('/#kontak');
 }
 
 // ---- 1. CSRF protection ----
 if (!csrf_verify($_POST['csrf_token'] ?? null)) {
-    redirect('index.php?status=error&reason=csrf#kontak');
+    redirect('/?status=error&reason=csrf#kontak');
 }
 
 // ---- 2. Ambil input & normalisasi ----
@@ -83,7 +83,7 @@ if (mb_strlen($message) > 1000) {
 // Jika ada error validasi, kirim kembali dengan daftar error di query string.
 if (!empty($errors)) {
     $reason = rawurlencode(implode(' ', $errors));
-    redirect('index.php?status=invalid&reason=' . $reason . '#kontak');
+    redirect('/?status=invalid&reason=' . $reason . '#kontak');
 }
 
 // ---- 4. Simpan ke database (prepared statement) ----
@@ -92,7 +92,7 @@ $pdo = db_connect();
 if ($pdo === null) {
     // Database tidak tersedia / kredensial salah.
     // Pesan aman untuk user, detail error hanya di log server.
-    redirect('index.php?status=error&reason=db#kontak');
+    redirect('/?status=error&reason=db#kontak');
 }
 
 try {
@@ -111,8 +111,8 @@ try {
     ]);
 } catch (PDOException $e) {
     error_log('[Lokalink] Gagal menyimpan lead: ' . $e->getMessage());
-    redirect('index.php?status=error&reason=db#kontak');
+    redirect('/?status=error&reason=db#kontak');
 }
 
 // ---- 5. Sukses ----
-redirect('index.php?status=success#kontak');
+redirect('/?status=success#kontak');

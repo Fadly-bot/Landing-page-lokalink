@@ -24,18 +24,59 @@ if (!function_exists('mb_strlen')) {
 }
 
 /**
- * Ambil / buat CSRF token untuk session ini.
- * Token disimpan di session server-side dan dicocokkan saat form disubmit.
+ * Secret untuk HMAC CSRF token.
+ *
+ * STATELESS CSRF (aman untuk serverless seperti Vercel):
+ * tidak menggunakan $_SESSION. Token terdiri dari:
+ *   {nonce}.{expiry}.{hmac_sha256(nonce.expiry, secret)}
+ * Server cukup memverifikasi HMAC dan masa berlaku token, tanpa state.
+ *
+ * Sumber secret (urutan prioritas):
+ *   1. Konstanta CSRF_SECRET (didefinisikan di config/config.php).
+ *   2. Environment variable CSRF_SECRET (getenv / $_ENV, mis. di Vercel).
+ *
+ * JANGAN hardcode secret di source code.
+ */
+function csrf_secret(): string
+{
+    if (defined('CSRF_SECRET') && CSRF_SECRET !== '') {
+        return (string) CSRF_SECRET;
+    }
+    $env = getenv('CSRF_SECRET');
+    if ($env !== false && $env !== '') {
+        return (string) $env;
+    }
+    if (isset($_ENV['CSRF_SECRET']) && $_ENV['CSRF_SECRET'] !== '') {
+        return (string) $_ENV['CSRF_SECRET'];
+    }
+    // Fallback darurat agar situs tetap berjalan di lokal tanpa config:
+    // diturunkan dari kredensial aplikasi, bukan secret yang di-hardcode.
+    $fallback = (defined('DB_HOST') ? DB_HOST : '')
+        . '|' . (defined('DB_NAME') ? DB_NAME : '')
+        . '|' . (defined('WHATSAPP_NUMBER') ? WHATSAPP_NUMBER : '')
+        . '|lokalink-csrf-fallback';
+    return hash('sha256', $fallback);
+}
+
+/**
+ * Masa berlaku CSRF token (detik). Default 2 jam.
+ */
+function csrf_token_lifetime(): int
+{
+    return defined('CSRF_TOKEN_LIFETIME') ? (int) CSRF_TOKEN_LIFETIME : 7200;
+}
+
+/**
+ * Buat CSRF token stateless:
+ * nonce kriptografis acak + waktu kedaluwarsa, ditandatangani HMAC-SHA256.
  */
 function csrf_token(): string
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
+    $nonce  = bin2hex(random_bytes(32));
+    $expiry = (string) (time() + csrf_token_lifetime());
+    $payload = $nonce . '.' . $expiry;
+    $mac = hash_hmac('sha256', $payload, csrf_secret());
+    return $payload . '.' . $mac;
 }
 
 /**
@@ -47,16 +88,30 @@ function csrf_field(): string
 }
 
 /**
- * Validasi CSRF token dari POST. Mengembalikan true jika cocok.
+ * Validasi CSRF token dari POST tanpa session.
+ * Token ditolak jika: format salah, HMAC tidak cocok, atau sudah kedaluwarsa.
  */
 function csrf_verify(?string $token): bool
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
+    if ($token === null || $token === '') {
+        return false;
     }
-    return !empty($_SESSION['csrf_token'])
-        && is_string($token)
-        && hash_equals($_SESSION['csrf_token'], $token);
+    $parts = explode('.', $token);
+    if (count($parts) !== 3) {
+        return false;
+    }
+    [$nonce, $expiry, $mac] = $parts;
+
+    // Nonce & expiry harus heksadesimal / numerik agar format terkendali.
+    if (!preg_match('/^[0-9a-f]{64}$/', $nonce) || !preg_match('/^\d{1,12}$/', $expiry)) {
+        return false;
+    }
+    // Kedaluwarsa: token lama otomatis ditolak.
+    if ((int) $expiry < time()) {
+        return false;
+    }
+    $expected = hash_hmac('sha256', $nonce . '.' . $expiry, csrf_secret());
+    return hash_equals($expected, $mac);
 }
 
 /**
