@@ -402,6 +402,56 @@ $migSrc = file_get_contents(__DIR__ . '/../database/migration-admin.sql');
 check('Migration uses USE lokalink', strpos($migSrc, 'USE lokalink;') !== false);
 
 // ===========================================================
+// 14. Vercel Configuration Tests
+// ===========================================================
+echo "\n=== 14. Vercel Configuration ===\n";
+
+$vercelJson = json_decode(file_get_contents(__DIR__ . '/../vercel.json'), true);
+check('vercel.json is valid JSON', is_array($vercelJson));
+
+check('admin entry has PHP runtime', isset($vercelJson['functions']['api/admin/index.php']) && $vercelJson['functions']['api/admin/index.php']['runtime'] === 'vercel-php@0.9.0');
+
+// Verify admin route exists and matches all required paths
+$adminRoute = null;
+foreach ($vercelJson['routes'] ?? [] as $route) {
+    if (isset($route['src']) && $route['src'] === '^/admin/?(.*)$') {
+        $adminRoute = $route;
+        break;
+    }
+}
+check('Admin route ^/admin/?(.*)$ exists', $adminRoute !== null);
+check('Admin route points to api/admin/index.php', ($adminRoute['dest'] ?? '') === '/api/admin/index.php');
+
+// Verify admin route regex matches required paths
+if ($adminRoute !== null) {
+    $regex = '/' . str_replace('/', '\/', $adminRoute['src']) . '/';
+    check('Route matches /admin', (bool) preg_match($regex, '/admin'));
+    check('Route matches /admin/', (bool) preg_match($regex, '/admin/'));
+    check('Route matches /admin/login.php', (bool) preg_match($regex, '/admin/login.php'));
+    check('Route matches /admin/logout.php', (bool) preg_match($regex, '/admin/logout.php'));
+    check('Route matches /admin/detail.php', (bool) preg_match($regex, '/admin/detail.php'));
+}
+
+// Verify catch-all excludes admin paths
+$catchAll = null;
+foreach ($vercelJson['routes'] ?? [] as $route) {
+    if (isset($route['src']) && strpos($route['src'], '^/(?!api/submit-lead') === 0 && isset($route['dest']) && $route['dest'] === '/api/index.php') {
+        $catchAll = $route;
+        break;
+    }
+}
+if ($catchAll !== null) {
+    $regex = '/' . str_replace('/', '\/', $catchAll['src']) . '/';
+    check('Catch-all excludes /admin', !(bool) preg_match($regex, '/admin'));
+    check('Catch-all excludes /admin/detail.php', !(bool) preg_match($regex, '/admin/detail.php'));
+    check('Catch-all still matches public page /', (bool) preg_match($regex, '/'));
+    check('Catch-all still matches public page /index.php', (bool) preg_match($regex, '/index.php'));
+    check('Catch-all still matches public route /#kontak', (bool) preg_match($regex, '/'));
+} else {
+    check('Catch-all route detected', false);
+}
+
+// ===========================================================
 // RESULTS
 // ===========================================================
 echo "\n" . str_repeat('=', 50) . "\n";

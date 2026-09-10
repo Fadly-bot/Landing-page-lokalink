@@ -6,6 +6,9 @@
         },
         "api/submit-lead.php": {
             "runtime": "vercel-php@0.9.0"
+        },
+        "api/admin/index.php": {
+            "runtime": "vercel-php@0.9.0"
         }
     },
     "routes": [
@@ -14,7 +17,7 @@
             "dest": "/api/submit-lead.php"
         },
         {
-            "src": "^/admin/(.*)$",
+            "src": "^/admin/?(.*)$",
             "dest": "/api/admin/index.php"
         },
         { "src": "/assets/(.*)", "dest": "/assets/$1" },
@@ -23,7 +26,7 @@
             "dest": "/$1"
         },
         {
-            "src": "^/(?!api/submit-lead\\.php$)(?!admin/)(.*)$",
+            "src": "^/(?!api/submit-lead\\.php$)(?!admin)(.*)$",
             "dest": "/api/index.php"
         }
     ]
