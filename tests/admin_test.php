@@ -507,6 +507,65 @@ check('detail.php still verifies CSRF (unchanged)', strpos($detailSource, 'csrf_
 check('detail.php still requires auth (unchanged)', strpos($detailSource, 'admin_auth_require()') !== false);
 
 // ===========================================================
+// 17. Delete Lead Feature Tests
+// ===========================================================
+echo "\n=== 17. Delete Lead Feature ===\n";
+
+check('Delete form uses POST', strpos($indexSrc, '<form method="post" action="/admin/index.php"') !== false);
+check('Delete action identifier present', strpos($indexSrc, 'name="action" value="delete"') !== false);
+check('Delete sends lead_id hidden input', strpos($indexSrc, 'name="lead_id"') !== false);
+check('Delete form includes CSRF field', strpos($indexSrc, 'name="lead_id"') !== false && strpos($indexSrc, 'csrf_field()') !== false);
+check('Delete icon button has aria-label', preg_match('/aria-label="Hapus lead"/', $indexSrc) === 1);
+check('Delete icon button has title', strpos($indexSrc, 'title="Hapus lead"') !== false);
+check('Delete icon uses 44px touch target (h-11 w-11)', substr_count($indexSrc, 'h-11 w-11') >= 3);
+check('Delete confirmation dialog present', strpos($indexSrc, 'data-confirm="Apakah Anda yakin ingin menghapus lead ini? Data yang dihapus tidak dapat dikembalikan."') !== false);
+check('Delete confirmation uses window.confirm', strpos($indexSrc, 'window.confirm(') !== false);
+check('Delete disables button to avoid double submit', strpos($indexSrc, 'btn.disabled = true') !== false);
+check('Delete success uses POST -> Redirect -> GET (status=deleted)', strpos($indexSrc, "redirect('/admin/index.php?status=deleted')") !== false);
+check('Dashboard shows success notification', strpos($indexSrc, "(\$_GET['status'] ?? '') === 'deleted'") !== false && strpos($indexSrc, 'Lead berhasil dihapus.') !== false);
+check('Existing Detail icon preserved', strpos($indexSrc, '/admin/detail.php?id=') !== false);
+check('Existing WhatsApp icon preserved', strpos($indexSrc, 'https://wa.me/') !== false);
+
+// ===========================================================
+// 18. Delete Lead Security Tests
+// ===========================================================
+echo "\n=== 18. Delete Lead Security ===\n";
+
+check('Delete requires authentication (admin_auth_require before handler)', strpos($indexSrc, 'admin_auth_require()') < strpos($indexSrc, "action === 'delete'"));
+check('Delete handler is POST-only', strpos($indexSrc, "if (\$_SERVER['REQUEST_METHOD'] === 'POST')") !== false);
+check('Delete action gated inside POST block', strpos($indexSrc, "if (\$_SERVER['REQUEST_METHOD'] === 'POST')") < strpos($indexSrc, "action === 'delete'"));
+check('GET cannot trigger delete', strpos($indexSrc, "\$_GET['lead_id']") === false && strpos($indexSrc, "\$_GET['delete']") === false && preg_match('/\?delete=/', $indexSrc) === 0);
+check('CSRF verified before delete)', strpos($indexSrc, 'csrf_verify') < strpos($indexSrc, 'DELETE FROM leads'));
+check('Invalid CSRF blocks delete', strpos($indexSrc, 'elseif (!csrf_verify') !== false || strpos($indexSrc, "!csrf_verify(\$_POST['csrf_token']") !== false);
+check('Lead ID validated as integer', strpos($indexSrc, 'FILTER_VALIDATE_INT') !== false && strpos($indexSrc, 'lead_id') !== false);
+check('Lead ID must be > 0', strpos($indexSrc, '$leadId <= 0') !== false);
+check('Delete uses prepared statement', strpos($indexSrc, "->prepare('DELETE FROM leads WHERE id = :id')") !== false);
+check('Delete query has WHERE id = :id', strpos($indexSrc, 'DELETE FROM leads WHERE id = :id') !== false);
+check('Delete does not use string interpolation', strpos($indexSrc, "DELETE FROM leads WHERE id = \$") === false);
+check('Database error logged, not shown to browser', strpos($indexSrc, "error_log('[Lokalink] Admin delete error: '") !== false);
+check('Generic error message shown on failure', strpos($indexSrc, "\$flashError = 'Gagal menghapus data.'") !== false);
+check('SQL detail not echoed to browser', strpos($indexSrc, "echo \$e->getMessage()") === false && strpos($indexSrc, "echo \$stmt->") === false);
+check('No new public delete route added', strpos($routerSource, 'delete') === false);
+
+// Runtime simulation of ID validation guard (FILTER_VALIDATE_INT semantics)
+function guard_lead_id(array $post): ?int {
+    if (!isset($post['lead_id'])) {
+        return null;
+    }
+    $id = filter_var($post['lead_id'], FILTER_VALIDATE_INT);
+    if ($id === false || $id === null || $id <= 0) {
+        return null;
+    }
+    return $id;
+}
+check('Delete: empty/missing ID rejected', guard_lead_id([]) === null);
+check('Delete: non-integer ID rejected', guard_lead_id(['lead_id' => 'abc']) === null);
+check('Delete: SQL injection payload rejected as ID', guard_lead_id(['lead_id' => "1 OR 1=1"]) === null);
+check('Delete: zero ID rejected', guard_lead_id(['lead_id' => '0']) === null);
+check('Delete: negative ID rejected', guard_lead_id(['lead_id' => '-5']) === null);
+check('Delete: valid positive int accepted', guard_lead_id(['lead_id' => '42']) === 42);
+
+// ===========================================================
 // RESULTS
 // ===========================================================
 echo "\n" . str_repeat('=', 50) . "\n";

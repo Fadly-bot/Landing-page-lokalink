@@ -31,6 +31,31 @@ if (!in_array($filterNeed, $allowedNeeds, true)) {
     $filterNeed = '';
 }
 
+// --- Handle delete (POST only, admin already authenticated above) ---
+$flash      = '';
+$flashError = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    if ($action === 'delete') {
+        $leadId = filter_input(INPUT_POST, 'lead_id', FILTER_VALIDATE_INT);
+        if ($leadId === false || $leadId === null || $leadId <= 0) {
+            $flashError = 'ID lead tidak valid.';
+        } elseif (!csrf_verify($_POST['csrf_token'] ?? null)) {
+            $flashError = 'Sesi tidak valid. Silakan coba lagi.';
+        } else {
+            try {
+                $stmt = $pdo->prepare('DELETE FROM leads WHERE id = :id');
+                $stmt->execute([':id' => $leadId]);
+                redirect('/admin/index.php?status=deleted');
+            } catch (PDOException $e) {
+                error_log('[Lokalink] Admin delete error: ' . $e->getMessage());
+                $flashError = 'Gagal menghapus data.';
+            }
+        }
+    }
+}
+
 // --- Stats ---
 try {
     $totalLeads = (int) $pdo->query('SELECT COUNT(*) FROM leads')->fetchColumn();
@@ -185,6 +210,17 @@ function status_badge(string $status): string {
 
 <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
+    <?php if (($_GET['status'] ?? '') === 'deleted'): ?>
+        <div class="mb-6 rounded-lg bg-green-50 border border-green-200 text-green-800 px-4 py-3 text-sm" role="status">
+            Lead berhasil dihapus.
+        </div>
+    <?php endif; ?>
+    <?php if ($flashError !== ''): ?>
+        <div class="mb-6 rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm" role="alert">
+            <?= e($flashError) ?>
+        </div>
+    <?php endif; ?>
+
     <!-- Stats -->
     <div class="grid gap-4 sm:grid-cols-3 mb-8">
         <div class="bg-white rounded-xl border border-slate-200 p-5">
@@ -286,6 +322,22 @@ function status_badge(string $status): string {
                                                 </svg>
                                             </a>
                                         <?php endif; ?>
+                                        <form method="post" action="/admin/index.php" class="inline m-0">
+                                            <input type="hidden" name="action" value="delete">
+                                            <input type="hidden" name="lead_id" value="<?= e((string) $lead['id']) ?>">
+                                            <?= csrf_field() ?>
+                                            <button type="submit"
+                                                    aria-label="Hapus lead"
+                                                    title="Hapus lead"
+                                                    data-confirm="Apakah Anda yakin ingin menghapus lead ini? Data yang dihapus tidak dapat dikembalikan."
+                                                    class="inline-flex h-11 w-11 items-center justify-center rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
+                                                    <path d="M3 6h18"></path>
+                                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"></path>
+                                                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                                </svg>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -317,6 +369,24 @@ function status_badge(string $status): string {
     </div>
 
 </main>
+
+<script>
+    (function () {
+        document.querySelectorAll('[data-confirm]').forEach(function (btn) {
+            var form = btn.closest('form');
+            if (!form) {
+                return;
+            }
+            form.addEventListener('submit', function (e) {
+                if (!window.confirm(btn.getAttribute('data-confirm'))) {
+                    e.preventDefault();
+                    return;
+                }
+                btn.disabled = true;
+            });
+        });
+    })();
+</script>
 
 </body>
 </html>
