@@ -13,13 +13,17 @@
             "src": "^/api/submit-lead\\.php$",
             "dest": "/api/submit-lead.php"
         },
+        {
+            "src": "^/admin/(.*)$",
+            "dest": "/api/admin/index.php"
+        },
         { "src": "/assets/(.*)", "dest": "/assets/$1" },
         {
             "src": "/(.*\\.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|avif|ico|woff2?|ttf|eot|txt|xml|json|webmanifest))",
             "dest": "/$1"
         },
         {
-            "src": "^/(?!api/submit-lead\\.php$)(.*)$",
+            "src": "^/(?!api/submit-lead\\.php$)(?!admin/)(.*)$",
             "dest": "/api/index.php"
         }
     ]
