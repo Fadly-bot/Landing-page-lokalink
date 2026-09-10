@@ -452,6 +452,61 @@ if ($catchAll !== null) {
 }
 
 // ===========================================================
+// 15. Admin Icon Button Tests
+// ===========================================================
+echo "\n=== 15. Admin Icon Buttons ===\n";
+
+$indexSrc = file_get_contents(__DIR__ . '/../admin/index.php');
+check('Index: Detail icon button keeps link to /admin/detail.php?id=', strpos($indexSrc, '/admin/detail.php?id=') !== false);
+check('Index: Detail icon button has aria-label', preg_match('/aria-label="[^"]*detail[^"]*"/i', $indexSrc) === 1);
+check('Index: WhatsApp icon button still uses https://wa.me/', strpos($indexSrc, 'https://wa.me/') !== false);
+check('Index: WhatsApp icon keeps target=_blank', strpos($indexSrc, 'target="_blank"') !== false);
+check('Index: WhatsApp icon keeps rel=noopener noreferrer', strpos($indexSrc, 'rel="noopener noreferrer"') !== false);
+check('Index: icon buttons use 44px touch target (h-11 w-11)', substr_count($indexSrc, 'h-11 w-11') >= 2);
+check('Index: Aksi column header preserved', strpos($indexSrc, '>Aksi</th>') !== false);
+
+$detailSrc = file_get_contents(__DIR__ . '/../admin/detail.php');
+check('Detail: WhatsApp icon button still uses https://wa.me/', strpos($detailSrc, 'https://wa.me/') !== false);
+check('Detail: WhatsApp icon keeps target=_blank', strpos($detailSrc, 'target="_blank"') !== false);
+check('Detail: WhatsApp icon keeps rel=noopener noreferrer', strpos($detailSrc, 'rel="noopener noreferrer"') !== false);
+check('Detail: WhatsApp icon button has aria-label', preg_match('/aria-label="[^"]*WhatsApp[^"]*"/i', $detailSrc) === 1);
+check('Detail: WhatsApp icon button has title attr', strpos($detailSrc, 'title="Chat WhatsApp"') !== false);
+check('Detail: WhatsApp number still displayed', strpos($detailSrc, "e(\$lead['whatsapp'])") !== false);
+check('Detail: WhatsApp icon uses 44px touch target (h-11 w-11)', substr_count($detailSrc, 'h-11 w-11') >= 1);
+check('Detail: no text-only Chat WhatsApp link', strpos($detailSrc, '>Chat WhatsApp</a>') === false && strpos($detailSrc, '>Chat WA</a>') === false);
+
+// ===========================================================
+// 16. Nullable Data (no Deprecated null array offset)
+// ===========================================================
+echo "\n=== 16. Nullable Data Handling ===\n";
+
+ob_start();
+$labelNeedsFixture = ['website-bisnis' => 'Website Bisnis', 'belum-tahu' => 'Belum Tahu'];
+$needsFixture = null;
+$rendered = ($needsFixture ?? null) !== null
+    ? ($labelNeedsFixture[$needsFixture] ?? $needsFixture)
+    : '—';
+$deprecationOutput = ob_get_clean();
+check('Nullable needs renders without Deprecated warning', strpos($deprecationOutput, 'Deprecated') === false);
+check('Nullable needs falls back to dash', $rendered === '—');
+
+ob_start();
+$needsFixture = 'website-bisnis';
+$rendered = ($needsFixture ?? null) !== null
+    ? ($labelNeedsFixture[$needsFixture] ?? $needsFixture)
+    : '—';
+$deprecationOutput = ob_get_clean();
+check('Non-null needs still maps to label', $rendered === 'Website Bisnis');
+
+check('detail.php guards nullable needs before array offset', strpos($detailSource, "(\$lead['needs'] ?? null) !== null") !== false);
+check('detail.php removed unsafe null-offset pattern', strpos($detailSource, "\$labelNeeds[\$lead['needs']] ?? (\$lead['needs'] ?? '—')") === false);
+check('index.php guards nullable needs before array offset', strpos($indexSource, "(\$lead['needs'] ?? null) !== null") !== false);
+check('index.php removed unsafe null-offset pattern', strpos($indexSource, "\$labelNeeds[\$lead['needs']] ?? (\$lead['needs'] ?? '—')") === false);
+check('detail.php uses prepared statements (unchanged)', strpos($detailSource, '->prepare(') !== false);
+check('detail.php still verifies CSRF (unchanged)', strpos($detailSource, 'csrf_verify') !== false);
+check('detail.php still requires auth (unchanged)', strpos($detailSource, 'admin_auth_require()') !== false);
+
+// ===========================================================
 // RESULTS
 // ===========================================================
 echo "\n" . str_repeat('=', 50) . "\n";
